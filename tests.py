@@ -3,10 +3,6 @@ from main import BooksCollector
 
 
 class TestBooksCollector:
-    @pytest.fixture
-    def collector(self):
-        return BooksCollector()
-
     @pytest.mark.parametrize('title', [
         'Гордость и предубеждение и зомби',
         'Что делать, если ваш кот хочет вас убить'
@@ -72,3 +68,24 @@ class TestBooksCollector:
     def test_delete_book_from_favorites_which_isnt_in_favorites(self, collector):
         collector.delete_book_from_favorites('Бесы')
         assert collector.get_list_of_favorites_books() == []
+
+    def test_get_book_genre_returns_expected_genre(self, collector):
+        collector.add_new_book('Гиперион')
+        collector.set_book_genre('Гиперион', 'Фантастика')
+        assert collector.get_book_genre('Гиперион') == 'Фантастика'
+
+    def test_get_books_genre_returns_expected_dict(self, collector):
+        collector.add_new_book('Солярис')
+        collector.add_new_book('Шутки Господа')
+        collector.set_book_genre('Солярис', 'Фантастика')
+        collector.set_book_genre('Шутки Господа', 'Комедии')
+        expected_dict = {
+            'Солярис': 'Фантастика',
+            'Шутки Господа': 'Комедии'
+        }
+        assert collector.get_books_genre() == expected_dict
+
+    def test_get_list_of_favorites_books_returns_expected_list(self, collector):
+        collector.add_new_book('Собака Баскервилей')
+        collector.add_book_in_favorites('Собака Баскервилей')
+        assert collector.get_list_of_favorites_books() == ['Собака Баскервилей']
